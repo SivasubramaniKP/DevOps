@@ -1,0 +1,4 @@
+node_modules/
+client/dist/
+data/*.sqlite
+# assets/catalog.json is intentionally NOT ignored: the Docker image bakes it in

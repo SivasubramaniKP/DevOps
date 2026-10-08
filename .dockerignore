@@ -1,0 +1,7 @@
+**
+!server/package.json
+!server/index.js
+!client/
+!assets/catalog.json
+client/node_modules
+client/dist

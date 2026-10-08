@@ -1,0 +1,21 @@
+# Builds the image, pushes it to Artifact Registry and deploys it to Cloud Run.
+substitutions:
+  _REGION: asia-south1
+  _REPO: swaradb
+  _SERVICE: swaradb
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ['build', '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BUILD_ID',
+           '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:latest', '.']
+  - name: gcr.io/cloud-builders/docker
+    args: ['push', '--all-tags', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}']
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args: ['run', 'deploy', '${_SERVICE}',
+           '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BUILD_ID',
+           '--region=${_REGION}', '--platform=managed', '--allow-unauthenticated',
+           '--min-instances=0', '--max-instances=3', '--memory=512Mi', '--cpu=1', '--port=8080']
+images:
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$BUILD_ID'
+options:
+  logging: CLOUD_LOGGING_ONLY
