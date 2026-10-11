@@ -17,6 +17,7 @@ const SORT = {
 };
 const cnt = arr => {
   const m = {}; arr.forEach(x => (m[x] = (m[x] || 0) + 1));
+  console.log("This is a new change")
   return Object.entries(m).sort((a, b) => b[1] - a[1]);
 };
 const has = (s, q) => String(s || '').toLowerCase().includes(q);
